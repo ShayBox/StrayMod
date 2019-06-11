@@ -25,5 +25,6 @@ hs_err_pid*
 # Custom
 *.iml
 .idea
+.gradle
 build
 run
