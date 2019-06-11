@@ -5,13 +5,13 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 class Overlay extends Gui {
 	Overlay(Minecraft mc) {
 		ScaledResolution scaled = new ScaledResolution(mc);
-		Duration duration = Duration.between(ZonedDateTime.now(), Main.INSTANCE.getZonedDateTime());
-		String string = format(duration);
+		Duration duration = Duration.between(LocalDateTime.now(), Main.INSTANCE.getTimerDate());
+		String string = Main.INSTANCE.isPaused() ? "PAUSED" : format(duration);
 		int width = scaled.getScaledWidth() - mc.fontRenderer.getStringWidth(string);
 		int height = scaled.getScaledHeight() - 10;
 		drawString(mc.fontRenderer, string, width, height, 0xFFAA00);
