@@ -10,30 +10,26 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.TimerTask;
 
 public class CustomTask extends TimerTask {
 	@Override
 	public void run() {
-		Main.INSTANCE.setZonedDateTime(ZonedDateTime.now().plusMinutes(Configuration.minutes));
+		Main.INSTANCE.setTimerDate(LocalDateTime.now().plusMinutes(Configuration.minutes));
 
 		EntityPlayer entityPlayer = Main.INSTANCE.getPlayer();
 		if (entityPlayer == null) return;
 
 		World world = entityPlayer.getEntityWorld();
 
-		BlockPos feetBlockPos = entityPlayer.getPosition();
-		IBlockState feetBlockState = world.getBlockState(feetBlockPos);
-
-		BlockPos headBlockPos = entityPlayer.getPosition();
-		IBlockState headBlockState = world.getBlockState(headBlockPos);
+		BlockPos blockPos = entityPlayer.getPosition();
+		IBlockState iBlockState = world.getBlockState(blockPos);
 
 		Block block = Block.getBlockFromName("chancecubes:chance_cube");
 		if (block == null) return;
 
-		if (feetBlockState.getBlock() == Blocks.AIR) world.setBlockState(feetBlockPos, block.getDefaultState());
-		else if (headBlockState.getBlock() == Blocks.AIR) world.setBlockState(headBlockPos, block.getDefaultState());
+		if (iBlockState.getBlock() == Blocks.AIR) world.setBlockState(blockPos, block.getDefaultState());
 		else {
 			boolean succeeded = entityPlayer.inventory.addItemStackToInventory(new ItemStack(block, 1));
 			if (succeeded) {
