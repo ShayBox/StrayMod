@@ -8,10 +8,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 class Overlay extends Gui {
+	private Main main = Main.INSTANCE;
+	
 	Overlay(Minecraft mc) {
 		ScaledResolution scaled = new ScaledResolution(mc);
-		Duration duration = Duration.between(LocalDateTime.now(), Main.INSTANCE.getTimerDate());
-		String string = Main.INSTANCE.isPaused() ? "PAUSED" : format(duration);
+		Duration duration = Duration.between(LocalDateTime.now(), main.getTimerDate());
+		String string = main.getPaused() == 1 ? "PAUSED" : main.getPaused() == 2 ? "START TIMER (Home)" : format(duration);
 		int width = scaled.getScaledWidth() - mc.fontRenderer.getStringWidth(string);
 		int height = scaled.getScaledHeight() - 10;
 		drawString(mc.fontRenderer, string, width, height, 0xFFAA00);
