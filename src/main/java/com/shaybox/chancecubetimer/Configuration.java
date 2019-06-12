@@ -10,7 +10,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Config(modid = Main.MOD_ID)
 @Mod.EventBusSubscriber
 public class Configuration {
-	public static int minutes = 5;
+	@Config.Comment("Timer interval (Minutes) (Reset timer to apply change)")
+	public static int timer = 5;
+
+	@Config.Comment("How long does the bat have to live? (Seconds)")
+	public static int bat = 5;
+
+	@Config.Comment("This should be clear enough")
 	public static boolean sound = true;
 
 	@SubscribeEvent

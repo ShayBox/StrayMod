@@ -1,8 +1,13 @@
 package com.shaybox.chancecubetimer;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -19,14 +24,17 @@ import static net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType
 class EventHandler {
 	private Main main = Main.INSTANCE;
 
+	// Show overlay
 	@SubscribeEvent
 	public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
 		if (event.getType() == EXPERIENCE) new Overlay(Minecraft.getMinecraft());
 	}
 
+	// Set player variable
 	@SubscribeEvent
 	public void onEntityJoinWorld(EntityJoinWorldEvent event) {
-		if (event.getWorld().isRemote) return;
+		World world = event.getWorld();
+		if (world.isRemote) return;
 
 		Entity entity = event.getEntity();
 		if (entity instanceof EntityPlayer) {
@@ -35,52 +43,64 @@ class EventHandler {
 		}
 	}
 
+	// Keybind handler
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (Keybinds.pause.isPressed()) {
-			if (main.isPaused()) {
-				// Calculate duration since paused
+			if (main.getPaused() == 0) {
+				main.setPaused(1);
+				main.getTimer().cancel();
+				main.setPauseDate(LocalDateTime.now());
+			} else if (main.getPaused() == 1) {
 				Duration duration = Duration.between(main.getPauseDate(), LocalDateTime.now());
-				System.out.println(duration.getSeconds());
-
-				// Add duration to time
 				LocalDateTime localDateTime = main.getTimerDate().plusSeconds(duration.getSeconds());
 
-				// Set timer
 				main.setTimerDate(localDateTime);
 
-				// Create timer with date
 				Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 				main.setTimer(new Timer());
-				main.getTimer().scheduleAtFixedRate(new CustomTask(), date, 1000 * 60 * Configuration.minutes);
+				main.getTimer().scheduleAtFixedRate(new CustomTask(), date, 1000 * 60 * Configuration.timer);
 
-				// Unpause
-				main.setPaused(false);
+				main.setPaused(0);
 			} else {
-				// Pause
-				main.setPaused(true);
+				LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(Configuration.timer);
 
-				// Cancel timer
-				main.getTimer().cancel();
+				main.setTimerDate(localDateTime);
 
-				// Save paused time
-				main.setPauseDate(LocalDateTime.now());
+				Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+				main.setTimer(new Timer());
+				main.getTimer().scheduleAtFixedRate(new CustomTask(), date, 1000 * 60 * Configuration.timer);
+
+				main.setPaused(0);
 			}
 		}
+
 		if (Keybinds.reset.isPressed()) {
-			// Cancel timer
 			main.getTimer().cancel();
 
-			// Add minutes to time
-			LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(Configuration.minutes);
+			LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(Configuration.timer);
 
-			// Set timer
 			main.setTimerDate(localDateTime);
 
-			// Create timer with date
 			Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 			main.setTimer(new Timer());
-			main.getTimer().scheduleAtFixedRate(new CustomTask(), date, 1000 * 60 * Configuration.minutes);
+			main.getTimer().scheduleAtFixedRate(new CustomTask(), date, 1000 * 60 * Configuration.timer);
+		}
+
+		if (Keybinds.give.isPressed()) {
+			EntityPlayer entityPlayer = main.getPlayer();
+
+			Block block = Block.getBlockFromName("chancecubes:chance_cube");
+			if (block == null) {
+				entityPlayer.sendMessage(new TextComponentString("There seems to be a problem"));
+				return;
+			}
+
+			boolean succeeded = entityPlayer.inventory.addItemStackToInventory(new ItemStack(block, 1));
+			if (succeeded) entityPlayer.sendMessage(new TextComponentString("CHANCECUBE!"));
+			else entityPlayer.sendMessage(new TextComponentString("I couldn't give you a block"));
+
+			if (Configuration.sound) entityPlayer.playSound(SoundEvents.BLOCK_NOTE_PLING, 1, 0);
 		}
 	}
 }

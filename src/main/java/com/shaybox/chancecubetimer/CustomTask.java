@@ -2,6 +2,8 @@ package com.shaybox.chancecubetimer;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -16,29 +18,43 @@ import java.util.TimerTask;
 public class CustomTask extends TimerTask {
 	@Override
 	public void run() {
-		Main.INSTANCE.setTimerDate(LocalDateTime.now().plusMinutes(Configuration.minutes));
+		Main.INSTANCE.setTimerDate(LocalDateTime.now().plusMinutes(Configuration.timer));
 
 		EntityPlayer entityPlayer = Main.INSTANCE.getPlayer();
 		if (entityPlayer == null) return;
 
 		World world = entityPlayer.getEntityWorld();
 
-		BlockPos blockPos = entityPlayer.getPosition();
-		IBlockState iBlockState = world.getBlockState(blockPos);
+		EntityBat entityBat = new EntityBat(world);
+		entityBat.setPosition(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ);
+		entityBat.setHealth(100);
 
-		Block block = Block.getBlockFromName("chancecubes:chance_cube");
-		if (block == null) return;
+		world.spawnEntity(entityBat);
+		if (Configuration.sound) entityPlayer.playSound(SoundEvents.BLOCK_NOTE_PLING, 1, 2);
 
-		if (iBlockState.getBlock() == Blocks.AIR) world.setBlockState(blockPos, block.getDefaultState());
-		else {
-			boolean succeeded = entityPlayer.inventory.addItemStackToInventory(new ItemStack(block, 1));
-			if (succeeded) {
-				entityPlayer.sendMessage(new TextComponentString("You were given a chance cube"));
-				if (Configuration.sound) entityPlayer.playSound(SoundEvents.BLOCK_NOTE_PLING, 1, 2);
-			} else {
-				entityPlayer.sendMessage(new TextComponentString("I was not able to give you a chance cube, sorry :("));
+		Utilities.setTimeout(() -> {
+			if (entityBat.isDead) return;
+			entityBat.setDead();
+
+			BlockPos blockPos = entityBat.getPosition();
+			IBlockState iBlockState = world.getBlockState(blockPos);
+
+			Block block = Block.getBlockFromName("chancecubes:chance_cube");
+			if (block == null) {
+				entityPlayer.sendMessage(new TextComponentString("There seems to be a problem"));
+				return;
+			}
+
+			if (iBlockState.getBlock() == Blocks.AIR) world.setBlockState(blockPos, block.getDefaultState());
+			else {
+				boolean succeeded = entityPlayer.inventory.addItemStackToInventory(new ItemStack(block, 1));
+				if (succeeded) entityPlayer.sendMessage(new TextComponentString("I couldn't place a block, I gave you one instead"));
+				else entityPlayer.sendMessage(new TextComponentString("I couldn't place or give you a block"));
+
 				if (Configuration.sound) entityPlayer.playSound(SoundEvents.BLOCK_NOTE_PLING, 1, 0);
 			}
-		}
+		}, 1000 * Configuration.bat);
+
+		if (Minecraft.getMinecraft().isGamePaused()) Main.INSTANCE.setPaused(1);
 	}
 }
