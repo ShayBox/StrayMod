@@ -1,4 +1,4 @@
-package com.shaybox.chancecubetimer;
+package com.shaybox.straymav;
 
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -6,18 +6,27 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@SuppressWarnings("ALL")
+@SuppressWarnings("WeakerAccess")
 @Config(modid = Main.MOD_ID)
 @Mod.EventBusSubscriber
-public class Configuration {
-	@Config.Comment("Timer interval (Minutes) (Reset timer to apply change)")
+class Configuration {
+
+	@Config.Comment("How often to place a chance cube (minutes)")
+	@Config.RangeInt(min = 1, max = 60)
+	@Config.SlidingOption
 	public static int timer = 5;
 
-	@Config.Comment("How long does the bat have to live? (Seconds)")
-	public static int bat = 5;
-
-	@Config.Comment("This should be clear enough")
+	@Config.Comment("Whether or not to have sounds")
 	public static boolean sound = true;
+
+	@Config.Comment("How much health will the bat have")
+	@Config.RangeInt(min = 1, max = 1000)
+	@Config.SlidingOption
+	public static int health = 6;
+
+	@Config.Comment("How long will the bat live (Seconds)")
+	@Config.RangeInt(min = 1, max = 300)
+	public static int lifetime = 5;
 
 	@SubscribeEvent
 	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {

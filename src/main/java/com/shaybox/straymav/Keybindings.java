@@ -1,11 +1,11 @@
-package com.shaybox.chancecubetimer;
+package com.shaybox.straymav;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
 
-class Keybinds {
-	static KeyBinding pause = new KeyBinding("Pause the timer", Keyboard.KEY_HOME, Main.MOD_NAME);
+class Keybindings {
+	static KeyBinding pause = new KeyBinding("Pause/Resume Timer", Keyboard.KEY_HOME, "StrayMav");
 	static KeyBinding reset = new KeyBinding("Reset the timer", Keyboard.KEY_END, Main.MOD_NAME);
 	static KeyBinding give = new KeyBinding("Give you a chance cube", Keyboard.KEY_INSERT, Main.MOD_NAME);
 

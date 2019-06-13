@@ -1,16 +1,18 @@
 [
-    {
-        "modid": "chancecubetimer",
-        "name": "ChanceCubeTimer",
-        "description": "injection point type '%s'",
-        "version": "${version}",
-        "mcversion": "${mcversion}",
-        "url": "https://shaybox.com/",
-        "updateUrl": "",
-        "authorList": ["ShayBox"],
-        "credits": "",
-        "logoFile": "",
-        "screenshots": [],
-        "dependencies": []
-    }
+  {
+    "modid": "straymav",
+    "name": "StrayMav",
+    "description": "injection point type '%s'",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://straymav.com/",
+    "updateUrl": "",
+    "authorList": [
+      "ShayBox"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]
