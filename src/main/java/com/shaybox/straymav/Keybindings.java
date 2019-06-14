@@ -8,10 +8,12 @@ class Keybindings {
 	static KeyBinding pause = new KeyBinding("Pause/Resume Timer", Keyboard.KEY_HOME, "StrayMav");
 	static KeyBinding reset = new KeyBinding("Reset the timer", Keyboard.KEY_END, Main.MOD_NAME);
 	static KeyBinding give = new KeyBinding("Give you a chance cube", Keyboard.KEY_INSERT, Main.MOD_NAME);
+	static KeyBinding bat = new KeyBinding("Spawn a bat", Keyboard.KEY_DELETE, Main.MOD_NAME);
 
 	static void register() {
 		ClientRegistry.registerKeyBinding(pause);
 		ClientRegistry.registerKeyBinding(reset);
 		ClientRegistry.registerKeyBinding(give);
+		ClientRegistry.registerKeyBinding(bat);
 	}
 }
