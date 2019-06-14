@@ -11,17 +11,25 @@ class Overlay extends Gui {
 	private Main main = Main.INSTANCE;
 
 	Overlay() {
+		Minecraft minecraft = Minecraft.getMinecraft();
+		ScaledResolution scaledResolution = new ScaledResolution(minecraft);
+
+		// Top Left
+		if (Configuration.fps) drawString(minecraft.fontRenderer, "FPS: " + Minecraft.getDebugFPS(), 0, 0, 0xFFAA00);
+
+		int width = scaledResolution.getScaledWidth();
+		int height = scaledResolution.getScaledHeight();
+
+		// Bottom Left
+		if (Configuration.fps) drawString(minecraft.fontRenderer, "This is our secret ;)", 0, height - 10, 0xFFAA);
+
+		// Bottom Right
 		String string = "Press " + Keybindings.pause.getDisplayName() + " To start the timer";
 		if (main.getState().equals("PAUSED")) string = "Paused";
 		if (main.getState().equals("RUNNING")) string = getTime();
 
-		Minecraft minecraft = Minecraft.getMinecraft();
-		ScaledResolution scaledResolution = new ScaledResolution(minecraft);
 		int stringWidth = minecraft.fontRenderer.getStringWidth(string);
-		int width = scaledResolution.getScaledWidth() - stringWidth;
-		int height = scaledResolution.getScaledHeight() - 10;
-
-		drawString(minecraft.fontRenderer, string, width, height, 0xFFAA00);
+		drawString(minecraft.fontRenderer, string, width - stringWidth, height - 10, 0xFFAA00);
 	}
 
 	private String getTime() {
