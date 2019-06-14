@@ -16,9 +16,6 @@ class Configuration {
 	@Config.SlidingOption
 	public static int timer = 5;
 
-	@Config.Comment("Whether or not to have sounds")
-	public static boolean sound = true;
-
 	@Config.Comment("How much health will the bat have")
 	@Config.RangeInt(min = 1, max = 1000)
 	@Config.SlidingOption
@@ -27,6 +24,12 @@ class Configuration {
 	@Config.Comment("How long will the bat live (Seconds)")
 	@Config.RangeInt(min = 1, max = 300)
 	public static int lifetime = 5;
+
+	@Config.Comment("Whether or not to have sounds")
+	public static boolean sound = true;
+
+	@Config.Comment("Whether or not to extend reach")
+	public static boolean reach = true;
 
 	@SubscribeEvent
 	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
