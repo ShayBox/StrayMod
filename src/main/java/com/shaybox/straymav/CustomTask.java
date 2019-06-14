@@ -13,7 +13,7 @@ class CustomTask extends TimerTask {
 	public void run() {
 		main.setTimerDateTime(LocalDateTime.now().plusMinutes(Configuration.timer));
 
-		Utilities.spawnBat(main.getPlayer());
+		Utilities.spawnBat(main.getPlayer(), minecraft);
 
 		if (minecraft.isGamePaused()) {
 			main.getTimer().cancel();

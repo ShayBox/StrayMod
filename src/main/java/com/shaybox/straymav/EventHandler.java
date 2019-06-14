@@ -1,5 +1,6 @@
 package com.shaybox.straymav;
 
+import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityMooshroom;
@@ -19,7 +20,6 @@ import java.util.Timer;
 
 class EventHandler {
 	private Main main = Main.INSTANCE;
-	private Minecraft minecraft = Minecraft.getMinecraft();
 
 	// Render overlay
 	@SubscribeEvent
@@ -44,7 +44,7 @@ class EventHandler {
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (Keybindings.pause.isPressed()) {
-			switch(main.getState()) {
+			switch (main.getState()) {
 				// Start timer
 				case "NOT_RUNNING": {
 					int delay = 1000 * 60 * Configuration.timer;
@@ -83,9 +83,9 @@ class EventHandler {
 			main.setState("RUNNING");
 		}
 		if (Keybindings.give.isPressed()) Utilities.giveChanceCube(main.getPlayer());
-		if (Keybindings.bat.isPressed()) Utilities.spawnBat(main.getPlayer());
-		if (Keybindings.tickrateUp.isPressed()) minecraft.player.sendChatMessage("/tickrate Infinity");
-		if (Keybindings.tickrateDown.isPressed()) minecraft.player.sendChatMessage("/tickrate 20");
+		if (Keybindings.bat.isPressed()) Utilities.spawnBat(main.getPlayer(), Minecraft.getMinecraft());
+		if (Keybindings.tickrateUp.isPressed()) TickrateAPI.changeTickrate(Float.MAX_VALUE, true);
+		if (Keybindings.tickrateDown.isPressed()) TickrateAPI.changeTickrate(20, true);
 	}
 
 	// SAVE PICKLES!

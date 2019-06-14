@@ -2,19 +2,23 @@ package com.shaybox.straymav;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 class Utilities {
-	private Main main = Main.INSTANCE;
-	private static Block chanceCubeBlock = Block.getBlockFromName("chancecubes:chance_cube");
+	private static Block chanceCubeBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("chancecubes:chance_cube"));
+	private static SoundEvent chanceCubeSound = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("chancecubes:giant_cube_spawn"));
 
-	static void setTimeout(Runnable runnable, int delay) {
+	private static void setTimeout(Runnable runnable, int delay) {
 		new Thread(() -> {
 			try {
 				Thread.sleep(delay);
@@ -28,16 +32,11 @@ class Utilities {
 	static void giveChanceCube(EntityPlayer player) {
 		if (player == null) return;
 
-		if (chanceCubeBlock == null) {
-			player.sendMessage(new TextComponentString("Could not find chancecubes:chance_cube"));
-			return;
-		}
-
 		boolean succeeded = player.inventory.addItemStackToInventory(new ItemStack(chanceCubeBlock, 1));
 		if (!succeeded) player.sendMessage(new TextComponentString("I couldn't give you a block"));
 	}
 
-	static void spawnBat(EntityPlayer player) {
+	static void spawnBat(EntityPlayer player, Minecraft minecraft) {
 		World world = player.getEntityWorld();
 
 		EntityBat entityBat = new EntityBat(world);
@@ -53,17 +52,15 @@ class Utilities {
 				BlockPos blockPos = entityBat.getPosition();
 				IBlockState iBlockState = world.getBlockState(blockPos);
 
-				if (chanceCubeBlock == null) {
-					player.sendMessage(new TextComponentString("Could not find chancecubes:chance_cube"));
-					return;
-				}
-
-				if (iBlockState.getBlock() == Blocks.AIR) world.setBlockState(blockPos, chanceCubeBlock.getDefaultState());
+				if (iBlockState.getBlock() == Blocks.AIR)
+					world.setBlockState(blockPos, chanceCubeBlock.getDefaultState());
 				else {
 					player.sendMessage(new TextComponentString("I was unable to place a block, have a cube"));
 					giveChanceCube(player);
 				}
 			}
+
+			if (Configuration.sound) minecraft.player.playSound(chanceCubeSound, 1, 1);
 		}, 1000 * Configuration.lifetime);
 	}
 }
