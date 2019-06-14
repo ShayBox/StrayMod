@@ -16,9 +16,6 @@ class Configuration {
 	@Config.SlidingOption
 	public static int timer = 5;
 
-	@Config.Comment("Whether or not to have sounds")
-	public static boolean sound = true;
-
 	@Config.Comment("How much health will the bat have")
 	@Config.RangeInt(min = 1, max = 1000)
 	@Config.SlidingOption
