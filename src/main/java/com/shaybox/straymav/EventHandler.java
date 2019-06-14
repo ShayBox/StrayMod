@@ -1,15 +1,9 @@
 package com.shaybox.straymav;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -25,12 +19,15 @@ import java.util.Timer;
 
 class EventHandler {
 	private Main main = Main.INSTANCE;
+	private Minecraft minecraft = Minecraft.getMinecraft();
 
+	// Render overlay
 	@SubscribeEvent
 	public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
 		if (event.getType() == ElementType.EXPERIENCE) new Overlay();
 	}
 
+	// Keep Main#player up to date
 	@SubscribeEvent
 	public void onEntityJoinWorld(EntityJoinWorldEvent event) {
 		World world = event.getWorld();
@@ -43,6 +40,7 @@ class EventHandler {
 		}
 	}
 
+	// Keybindings Handler
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (Keybindings.pause.isPressed()) {
@@ -84,61 +82,13 @@ class EventHandler {
 			main.setTimerDateTime(LocalDateTime.now().plusMinutes(Configuration.timer));
 			main.setState("RUNNING");
 		}
-		if (Keybindings.give.isPressed()) {
-			EntityPlayer player = main.getPlayer();
-
-			Block block = Block.getBlockFromName("chancecubes:chance_cube");
-			if (block == null) {
-				player.sendMessage(new TextComponentString("Could not find chancecubes:chance_cube"));
-				return;
-			}
-
-			boolean succeeded = player.inventory.addItemStackToInventory(new ItemStack(block, 1));
-			if (succeeded) player.sendMessage(new TextComponentString("CHANCECUBE!"));
-			else player.sendMessage(new TextComponentString("I couldn't give you a block"));
-
-			if (Configuration.sound) player.playSound(SoundEvents.BLOCK_NOTE_PLING, 1, 0);
-		}
-		if (Keybindings.bat.isPressed()) {
-			EntityPlayer player = main.getPlayer();
-			World world = player.getEntityWorld();
-
-			EntityBat entityBat = new EntityBat(world);
-			entityBat.setPosition(player.posX, player.posY, player.posZ);
-			entityBat.setHealth(Configuration.health);
-			world.spawnEntity(entityBat);
-
-			if (Configuration.sound) player.playSound(SoundEvents.BLOCK_NOTE_PLING, 1, 2);
-
-			try {
-				Thread.sleep(1000 * Configuration.lifetime);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-			if (entityBat.isDead) return;
-			entityBat.setDead();
-
-			BlockPos blockPos = entityBat.getPosition();
-			IBlockState iBlockState = world.getBlockState(blockPos);
-
-			Block block = Block.getBlockFromName("chancecubes:chance_cube");
-			if (block == null) {
-				player.sendMessage(new TextComponentString("Could not find chancecubes:chance_cube"));
-				return;
-			}
-
-			if (iBlockState.getBlock() == Blocks.AIR) world.setBlockState(blockPos, block.getDefaultState());
-			else {
-				boolean succeeded = player.inventory.addItemStackToInventory(new ItemStack(block, 1));
-				if (succeeded) player.sendMessage(new TextComponentString("I couldn't place a block, I gave you one instead"));
-				else player.sendMessage(new TextComponentString("I couldn't place or give you a block"));
-
-				if (Configuration.sound) player.playSound(SoundEvents.BLOCK_NOTE_PLING, 1, 0);
-			}
-		}
+		if (Keybindings.give.isPressed()) Utilities.giveChanceCube(main.getPlayer());
+		if (Keybindings.bat.isPressed()) Utilities.spawnBat(main.getPlayer());
+		if (Keybindings.tickrateUp.isPressed()) minecraft.player.sendChatMessage("/tickrate Infinity");
+		if (Keybindings.tickrateDown.isPressed()) minecraft.player.sendChatMessage("/tickrate 20");
 	}
 
+	// SAVE PICKLES!
 	@SubscribeEvent
 	public void onLivingDeath(LivingDeathEvent event) {
 		Entity entity = event.getEntity();
@@ -148,7 +98,7 @@ class EventHandler {
 			EntityPlayer player = main.getPlayer();
 			entityMooshroom.setHealth(20);
 			entityMooshroom.attemptTeleport(player.posX, player.posY, player.posZ);
-			player.sendMessage(new TextComponentString("no"));
+			player.sendMessage(new TextComponentString("#SAVEPICKLES"));
 		}
 	}
 }
