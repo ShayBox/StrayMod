@@ -35,6 +35,7 @@ repositories {
 }
 
 dependencies {
+    compile files("lib/TickrateChanger-1.0.14-deobf.jar")
 }
 
 processResources {
