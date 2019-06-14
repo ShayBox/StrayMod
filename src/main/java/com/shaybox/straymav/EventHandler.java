@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -14,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
@@ -134,6 +136,19 @@ class EventHandler {
 
 				if (Configuration.sound) player.playSound(SoundEvents.BLOCK_NOTE_PLING, 1, 0);
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public void onLivingDeath(LivingDeathEvent event) {
+		Entity entity = event.getEntity();
+		if (entity instanceof EntityMooshroom && entity.getName().equals("Pickles")) {
+			event.setCanceled(true);
+			EntityMooshroom entityMooshroom = (EntityMooshroom) entity;
+			EntityPlayer player = main.getPlayer();
+			entityMooshroom.setHealth(20);
+			entityMooshroom.attemptTeleport(player.posX, player.posY, player.posZ);
+			player.sendMessage(new TextComponentString("no"));
 		}
 	}
 }
