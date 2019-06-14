@@ -25,11 +25,19 @@ class Configuration {
 	@Config.RangeInt(min = 1, max = 300)
 	public static int lifetime = 5;
 
+	@Config.Comment("Block reach range (Relog to apply)")
+	@Config.RangeInt(min = 5, max = 100)
+	@Config.SlidingOption
+	public static int range = 10;
+
 	@Config.Comment("Whether or not to have sounds")
 	public static boolean sound = true;
 
-	@Config.Comment("Whether or not to extend reach")
+	@Config.Comment("Whether or not to extend reach (Relog to apply)")
 	public static boolean reach = true;
+
+	@Config.Comment("Whether or not to show FPS")
+	public static boolean fps = true;
 
 	@SubscribeEvent
 	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {

@@ -3,8 +3,6 @@ package com.shaybox.straymav;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentString;
@@ -19,7 +17,8 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Timer;
-import java.util.UUID;
+
+import static net.minecraft.entity.player.EntityPlayer.REACH_DISTANCE;
 
 class EventHandler {
 	private Main main = Main.INSTANCE;
@@ -42,16 +41,7 @@ class EventHandler {
 			main.setPlayer(player);
 
 			// Extend reach
-			IAttributeInstance iAttributeInstance = player.getEntityAttribute(EntityPlayer.REACH_DISTANCE);
-			UUID uuid = UUID.fromString("0DD5A1AD-CA11-ADD5-1CED-C0FFEEEFFEC7");
-			AttributeModifier attributeModifier = new AttributeModifier(uuid, "extend_reach", 100, 0);
-			if (Configuration.reach) {
-				if (!iAttributeInstance.hasModifier(attributeModifier))
-					player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).applyModifier(attributeModifier);
-			} else {
-				if (iAttributeInstance.hasModifier(attributeModifier))
-					player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).removeModifier(attributeModifier);
-			}
+			player.getEntityAttribute(REACH_DISTANCE).setBaseValue(Configuration.reach ? Configuration.range : 5.0D);
 		}
 	}
 
@@ -97,10 +87,26 @@ class EventHandler {
 			main.setTimerDateTime(LocalDateTime.now().plusMinutes(Configuration.timer));
 			main.setState("RUNNING");
 		}
-		if (Keybindings.give.isPressed()) Utilities.giveChanceCube(main.getPlayer());
-		if (Keybindings.bat.isPressed()) Utilities.spawnBat(main.getPlayer(), Minecraft.getMinecraft());
-		if (Keybindings.tickrateUp.isPressed()) TickrateAPI.changeTickrate(Float.MAX_VALUE, true);
-		if (Keybindings.tickrateDown.isPressed()) TickrateAPI.changeTickrate(20, true);
+		if (Keybindings.give.isPressed()) {
+			EntityPlayer player = main.getPlayer();
+			Utilities.giveChanceCube(player);
+			player.sendMessage(new TextComponentString("You have been given a chance cube"));
+		}
+		if (Keybindings.bat.isPressed()) {
+			EntityPlayer player = main.getPlayer();
+			Utilities.spawnBat(player, Minecraft.getMinecraft());
+			player.sendMessage(new TextComponentString("A bat has been spawned"));
+		}
+		if (Keybindings.tickrateUp.isPressed()) {
+			EntityPlayer player = main.getPlayer();
+			TickrateAPI.changeTickrate(Float.MAX_VALUE);
+			player.sendMessage(new TextComponentString("Tickrate set to max"));
+		}
+		if (Keybindings.tickrateDown.isPressed()) {
+			EntityPlayer player = main.getPlayer();
+			TickrateAPI.changeTickrate(20);
+			player.sendMessage(new TextComponentString("Tickrate set to default"));
+		}
 	}
 
 	// SAVE PICKLES!

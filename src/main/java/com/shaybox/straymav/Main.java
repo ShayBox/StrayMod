@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.lwjgl.opengl.Display;
 
 import java.time.LocalDateTime;
 import java.util.Timer;
@@ -14,7 +15,7 @@ import java.util.Timer;
 public class Main {
 	static final String MOD_ID = "straymav";
 	static final String MOD_NAME = "StrayMav";
-	static final String VERSION = "1.0.5";
+	static final String VERSION = "1.0.6";
 
 	@Mod.Instance(MOD_ID)
 	static Main INSTANCE;
@@ -27,11 +28,11 @@ public class Main {
 
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent event) {
+		Display.setTitle("#SAVEPICKLES");
 	}
 
 	@Mod.EventHandler
-	public void init(FMLInitializationEvent event) {
-	}
+	public void init(FMLInitializationEvent event) {}
 
 	@Mod.EventHandler
 	public void postinit(FMLPostInitializationEvent event) {
