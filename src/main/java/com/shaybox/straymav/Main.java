@@ -9,22 +9,25 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.lwjgl.opengl.Display;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Timer;
 
 @Mod(modid = Main.MOD_ID, name = Main.MOD_NAME, version = Main.VERSION, dependencies = "required-after:chancecubes;required-after:tickratechanger")
 public class Main {
 	static final String MOD_ID = "straymav";
 	static final String MOD_NAME = "StrayMav";
-	static final String VERSION = "1.0.6";
+	static final String VERSION = "1.1.0";
 
 	@Mod.Instance(MOD_ID)
 	static Main INSTANCE;
 
-	private Timer timer;
-	private LocalDateTime timerDateTime;
+	private Timer timer = new Timer();
+	private LocalDateTime timerDateTime = LocalDateTime.now();
 	private LocalDateTime pauseDateTime;
 	private String state = "NOT_RUNNING";
 	private EntityPlayer player;
+	private Queue<Integer> queue = new LinkedList<>();
 
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent event) {
@@ -44,8 +47,10 @@ public class Main {
 		return timer;
 	}
 
-	void setTimer(Timer timer) {
-		this.timer = timer;
+	Timer restartTimer() {
+		this.timer.cancel();
+		this.timer = new Timer();
+		return this.timer;
 	}
 
 	LocalDateTime getTimerDateTime() {
@@ -78,5 +83,9 @@ public class Main {
 
 	void setPlayer(EntityPlayer player) {
 		this.player = player;
+	}
+
+	Queue<Integer> getQueue() {
+		return queue;
 	}
 }

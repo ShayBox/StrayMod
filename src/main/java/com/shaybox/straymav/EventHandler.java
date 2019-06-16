@@ -13,10 +13,10 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Timer;
 
 import static net.minecraft.entity.player.EntityPlayer.REACH_DISTANCE;
 
@@ -45,6 +45,22 @@ class EventHandler {
 		}
 	}
 
+	// Login chat guide
+	@SubscribeEvent
+	public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+		if (!Configuration.guide) return;
+		event.player.sendMessage(new TextComponentString("Quick guide:"));
+		event.player.sendMessage(new TextComponentString(Keybindings.add.getDisplayName() + " to one to queue"));
+		event.player.sendMessage(new TextComponentString(Keybindings.remove.getDisplayName() + " to remove one from queue"));
+		event.player.sendMessage(new TextComponentString(Keybindings.pause.getDisplayName() + " to start and pause queue"));
+		event.player.sendMessage(new TextComponentString(Keybindings.skip.getDisplayName() + " to immediately skip a cycle"));
+		event.player.sendMessage(new TextComponentString(Keybindings.tickrateMax.getDisplayName() + " to set tickrate to max"));
+		event.player.sendMessage(new TextComponentString(Keybindings.tickrateNormal.getDisplayName() + " to set tickrate to normal"));
+		event.player.sendMessage(new TextComponentString(Keybindings.give.getDisplayName() + " to get a chance cube"));
+		event.player.sendMessage(new TextComponentString(Keybindings.bat.getDisplayName() + " to spawn a bat"));
+		event.player.sendMessage(new TextComponentString("All of these can be changed in Controls, #SAVEPICKLES"));
+	}
+
 	// Keybindings Handler
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
@@ -52,60 +68,68 @@ class EventHandler {
 			switch (main.getState()) {
 				// Start timer
 				case "NOT_RUNNING": {
-					int delay = 1000 * 60 * Configuration.timer;
-					main.setTimer(new Timer());
-					main.getTimer().scheduleAtFixedRate(new CustomTask(), delay, delay);
-					main.setTimerDateTime(LocalDateTime.now().plusMinutes(Configuration.timer));
+					if (main.getQueue().size() == 0) {
+						main.getPlayer().sendMessage(new TextComponentString("Queue is empty"));
+						return;
+					}
+					main.getTimer().scheduleAtFixedRate(new CustomTask(), 0, 1000 * 60 * Configuration.timer);
 					main.setState("RUNNING");
 					break;
 				}
 				// Pause timer
 				case "RUNNING": {
-					main.getTimer().cancel();
+					main.restartTimer();
 					main.setPauseDateTime(LocalDateTime.now());
 					main.setState("PAUSED");
 					break;
 				}
 				// Resume timer
 				case "PAUSED": {
-					Duration duration = Duration.between(main.getPauseDateTime(), LocalDateTime.now());
-					LocalDateTime localDateTime = main.getTimerDateTime().plusSeconds(duration.getSeconds());
-					Duration duration1 = Duration.between(LocalDateTime.now(), localDateTime);
-					main.setTimer(new Timer());
-					main.getTimer().scheduleAtFixedRate(new CustomTask(), 1000 * duration1.getSeconds(), 1000 * 60 * Configuration.timer);
+					Duration pauseDuration = Duration.between(main.getPauseDateTime(), LocalDateTime.now());
+					LocalDateTime localDateTime = main.getTimerDateTime().plusSeconds(pauseDuration.getSeconds());
+					Duration delayDuration = Duration.between(LocalDateTime.now(), localDateTime);
+					main.getTimer().scheduleAtFixedRate(new CustomTask(), 1000 * delayDuration.getSeconds(), 1000 * 60 * Configuration.timer);
 					main.setTimerDateTime(localDateTime);
 					main.setState("RUNNING");
 					break;
 				}
 			}
 		}
-		if (Keybindings.reset.isPressed()) {
-			int delay = 1000 * 60 * Configuration.timer;
-			main.getTimer().cancel();
-			main.setTimer(new Timer());
-			main.getTimer().scheduleAtFixedRate(new CustomTask(), delay, delay);
-			main.setTimerDateTime(LocalDateTime.now().plusMinutes(Configuration.timer));
+		if (Keybindings.skip.isPressed()) {
+			if (main.getQueue().size() == 0) {
+				main.getPlayer().sendMessage(new TextComponentString("Queue is empty"));
+				return;
+			}
+			main.restartTimer().scheduleAtFixedRate(new CustomTask(), 0, 1000 * 60 * Configuration.timer);
 			main.setState("RUNNING");
 		}
+		if (Keybindings.add.isPressed()) {
+			main.getQueue().add(1);
+			main.getPlayer().sendMessage(new TextComponentString("Added one to queue"));
+		}
+		if (Keybindings.remove.isPressed()) {
+			if (main.getQueue().size() == 0) {
+				main.getPlayer().sendMessage(new TextComponentString("Queue is empty"));
+				return;
+			}
+			main.getQueue().remove();
+			main.getPlayer().sendMessage(new TextComponentString("removed one to queue"));
+		}
 		if (Keybindings.give.isPressed()) {
-			EntityPlayer player = main.getPlayer();
-			Utilities.giveChanceCube(player);
-			player.sendMessage(new TextComponentString("You have been given a chance cube"));
+			Utilities.giveChanceCube(main.getPlayer());
+			main.getPlayer().sendMessage(new TextComponentString("Gave chancecube"));
 		}
 		if (Keybindings.bat.isPressed()) {
-			EntityPlayer player = main.getPlayer();
-			Utilities.spawnBat(player, Minecraft.getMinecraft());
-			player.sendMessage(new TextComponentString("A bat has been spawned"));
+			Utilities.spawnBat(main.getPlayer(), Minecraft.getMinecraft());
+			main.getPlayer().sendMessage(new TextComponentString("Spawned bat"));
 		}
-		if (Keybindings.tickrateUp.isPressed()) {
-			EntityPlayer player = main.getPlayer();
+		if (Keybindings.tickrateMax.isPressed()) {
 			TickrateAPI.changeTickrate(Float.MAX_VALUE);
-			player.sendMessage(new TextComponentString("Tickrate set to max"));
+			main.getPlayer().sendMessage(new TextComponentString("Set tickrate to max"));
 		}
-		if (Keybindings.tickrateDown.isPressed()) {
-			EntityPlayer player = main.getPlayer();
+		if (Keybindings.tickrateNormal.isPressed()) {
 			TickrateAPI.changeTickrate(20);
-			player.sendMessage(new TextComponentString("Tickrate set to default"));
+			main.getPlayer().sendMessage(new TextComponentString("Set tickrate to normal"));
 		}
 	}
 
