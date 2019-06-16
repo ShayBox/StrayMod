@@ -41,7 +41,7 @@ class Utilities {
 
 		EntityBat entityBat = new EntityBat(world);
 		entityBat.setPosition(player.posX, player.posY, player.posZ);
-		entityBat.setHealth(Configuration.health);
+		entityBat.setHealth(Configuration.timer.batHealth);
 		world.spawnEntity(entityBat);
 
 		setTimeout(() -> {
@@ -60,7 +60,7 @@ class Utilities {
 				}
 			}
 
-			if (Configuration.sound) minecraft.player.playSound(chanceCubeSound, 1, 1);
-		}, 1000 * Configuration.lifetime);
+			if (Configuration.misc.sound) minecraft.player.playSound(chanceCubeSound, 1, 1);
+		}, 1000 * Configuration.timer.batLifetime);
 	}
 }

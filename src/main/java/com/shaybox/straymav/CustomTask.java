@@ -17,7 +17,7 @@ class CustomTask extends TimerTask {
 
 		Utilities.spawnBat(player, minecraft);
 
-		main.setTimerDateTime(LocalDateTime.now().plusMinutes(Configuration.timer));
+		main.setTimerDateTime(LocalDateTime.now().plusMinutes(Configuration.timer.minutes));
 		main.getQueue().remove();
 		if (minecraft.isGamePaused() || main.getQueue().size() == 0) {
 			main.restartTimer();
