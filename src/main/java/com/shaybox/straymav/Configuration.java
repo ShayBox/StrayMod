@@ -47,6 +47,9 @@ class Configuration {
 	@Config.Comment("Show guide?")
 	public static boolean guide = true;
 
+	@Config.Comment("Show random tick speed?")
+	public static boolean tickspeed = true;
+
 	@SubscribeEvent
 	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
 		if (event.getModID().equals(Main.MOD_ID)) ConfigManager.sync(Main.MOD_ID, Config.Type.INSTANCE);

@@ -125,11 +125,20 @@ class EventHandler {
 		}
 		if (Keybindings.tickrateMax.isPressed()) {
 			TickrateAPI.changeTickrate(Float.MAX_VALUE);
-			main.getPlayer().sendMessage(new TextComponentString("Set tickrate to max"));
+			main.getPlayer().sendMessage(new TextComponentString("Set tickrate to Infinite"));
 		}
 		if (Keybindings.tickrateNormal.isPressed()) {
 			TickrateAPI.changeTickrate(20);
-			main.getPlayer().sendMessage(new TextComponentString("Set tickrate to normal"));
+			main.getPlayer().sendMessage(new TextComponentString("Set tickrate to 20"));
+		}
+		if (Keybindings.randomDouble.isPressed()) {
+			int randomTickSpeed = main.getPlayer().getEntityWorld().getGameRules().getInt("randomTickSpeed");
+			main.getPlayer().getEntityWorld().getGameRules().setOrCreateGameRule("randomTickSpeed", String.valueOf(randomTickSpeed * 2));
+			main.getPlayer().sendMessage(new TextComponentString("Random Tick Speed is now " + randomTickSpeed * 2));
+		}
+		if (Keybindings.randomNormal.isPressed()) {
+			main.getPlayer().getEntityWorld().getGameRules().setOrCreateGameRule("randomTickSpeed", "3");
+			main.getPlayer().sendMessage(new TextComponentString("Set random tick speed to 3"));
 		}
 	}
 
