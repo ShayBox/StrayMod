@@ -16,10 +16,10 @@ class Overlay extends Gui {
 		ScaledResolution scaledResolution = new ScaledResolution(minecraft);
 
 		// Top Left
-		if (Configuration.fps) drawString(minecraft.fontRenderer, "FPS: " + Minecraft.getDebugFPS(), 0, 0, 0xFFAA00);
-		if (Configuration.tickrate) drawString(minecraft.fontRenderer, "TPS: " + TickrateAPI.getServerTickrate(), 0, 10, 0xFFAA00);
+		if (Configuration.overlay.framerate) drawString(minecraft.fontRenderer, "FPS: " + Minecraft.getDebugFPS(), 0, 0, 0xFFAA00);
+		if (Configuration.overlay.tickrate) drawString(minecraft.fontRenderer, "TPS: " + TickrateAPI.getServerTickrate(), 0, 10, 0xFFAA00);
 		int randomTickSpeed = main.getPlayer().getEntityWorld().getGameRules().getInt("randomTickSpeed");
-		if (Configuration.tickspeed) drawString(minecraft.fontRenderer, "RTS: " + randomTickSpeed, 0, 20, 0xFFAA00);
+		if (Configuration.overlay.randomTickSpeed) drawString(minecraft.fontRenderer, "RTS: " + randomTickSpeed, 0, 20, 0xFFAA00);
 
 		// Bottom Left
 		int queueSize = main.getQueue().size();

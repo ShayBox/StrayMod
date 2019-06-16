@@ -3,6 +3,7 @@ package com.shaybox.straymav;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentString;
@@ -14,6 +15,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -40,15 +42,15 @@ class EventHandler {
 			EntityPlayer player = (EntityPlayer) entity;
 			main.setPlayer(player);
 
-			// Extend reach
-			player.getEntityAttribute(REACH_DISTANCE).setBaseValue(Configuration.reach ? Configuration.range : 5.0D);
+			// Extend extend
+			player.getEntityAttribute(REACH_DISTANCE).setBaseValue(Configuration.reach.extend ? Configuration.reach.range : 5.0D);
 		}
 	}
 
 	// Login chat guide
 	@SubscribeEvent
 	public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		if (!Configuration.guide) return;
+		if (!Configuration.misc.guide) return;
 		event.player.sendMessage(new TextComponentString("Quick guide:"));
 		event.player.sendMessage(new TextComponentString(Keybindings.add.getDisplayName() + " to one to queue"));
 		event.player.sendMessage(new TextComponentString(Keybindings.remove.getDisplayName() + " to remove one from queue"));
@@ -61,34 +63,53 @@ class EventHandler {
 		event.player.sendMessage(new TextComponentString("All of these can be changed in Controls, #SAVEPICKLES"));
 	}
 
+	@SubscribeEvent
+	public void onWorldTick(TickEvent.WorldTickEvent event) {
+		for (Entity entity : event.world.getLoadedEntityList()) {
+			if (entity instanceof EntityCow) {
+				EntityCow cow = (EntityCow) entity;
+				// Accelerated cow breeding
+				if (Configuration.cow.breeding) {
+					int breedingCooldown = 20 * Configuration.cow.breedingCooldown;
+					if (cow.getGrowingAge() > breedingCooldown) cow.setGrowingAge(breedingCooldown);
+				}
+				// Accelerated cow ageing
+				if (Configuration.cow.ageing) {
+					int ageingCooldown = -(20 * Configuration.cow.ageingCooldown);
+					if (cow.getGrowingAge() < ageingCooldown) cow.setGrowingAge(ageingCooldown);
+				}
+			}
+		}
+	}
+
 	// Keybindings Handler
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (Keybindings.pause.isPressed()) {
 			switch (main.getState()) {
-				// Start timer
+				// Start minutes
 				case "NOT_RUNNING": {
 					if (main.getQueue().size() == 0) {
 						main.getPlayer().sendMessage(new TextComponentString("Queue is empty"));
 						return;
 					}
-					main.getTimer().scheduleAtFixedRate(new CustomTask(), 0, 1000 * 60 * Configuration.timer);
+					main.getTimer().scheduleAtFixedRate(new CustomTask(), 0, 1000 * 60 * Configuration.timer.minutes);
 					main.setState("RUNNING");
 					break;
 				}
-				// Pause timer
+				// Pause minutes
 				case "RUNNING": {
 					main.restartTimer();
 					main.setPauseDateTime(LocalDateTime.now());
 					main.setState("PAUSED");
 					break;
 				}
-				// Resume timer
+				// Resume minutes
 				case "PAUSED": {
 					Duration pauseDuration = Duration.between(main.getPauseDateTime(), LocalDateTime.now());
 					LocalDateTime localDateTime = main.getTimerDateTime().plusSeconds(pauseDuration.getSeconds());
 					Duration delayDuration = Duration.between(LocalDateTime.now(), localDateTime);
-					main.getTimer().scheduleAtFixedRate(new CustomTask(), 1000 * delayDuration.getSeconds(), 1000 * 60 * Configuration.timer);
+					main.getTimer().scheduleAtFixedRate(new CustomTask(), 1000 * delayDuration.getSeconds(), 1000 * 60 * Configuration.timer.minutes);
 					main.setTimerDateTime(localDateTime);
 					main.setState("RUNNING");
 					break;
@@ -100,7 +121,7 @@ class EventHandler {
 				main.getPlayer().sendMessage(new TextComponentString("Queue is empty"));
 				return;
 			}
-			main.restartTimer().scheduleAtFixedRate(new CustomTask(), 0, 1000 * 60 * Configuration.timer);
+			main.restartTimer().scheduleAtFixedRate(new CustomTask(), 0, 1000 * 60 * Configuration.timer.minutes);
 			main.setState("RUNNING");
 		}
 		if (Keybindings.add.isPressed()) {
