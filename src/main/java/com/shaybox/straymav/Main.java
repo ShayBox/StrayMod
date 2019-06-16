@@ -17,7 +17,7 @@ import java.util.Timer;
 public class Main {
 	static final String MOD_ID = "straymav";
 	static final String MOD_NAME = "StrayMav";
-	static final String VERSION = "1.1.0";
+	static final String VERSION = "1.1.1";
 
 	@Mod.Instance(MOD_ID)
 	static Main INSTANCE;
