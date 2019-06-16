@@ -17,27 +17,35 @@ class Configuration {
 	public static int timer = 5;
 
 	@Config.Comment("How much health will the bat have")
-	@Config.RangeInt(min = 1, max = 1000)
+	@Config.RangeInt(min = 1, max = 100)
 	@Config.SlidingOption
 	public static int health = 6;
 
 	@Config.Comment("How long will the bat live (Seconds)")
-	@Config.RangeInt(min = 1, max = 300)
+	@Config.RangeInt(min = 1, max = 60)
 	public static int lifetime = 5;
 
-	@Config.Comment("Block reach range (Relog to apply)")
+	@Config.Comment("Block reach range")
 	@Config.RangeInt(min = 5, max = 100)
 	@Config.SlidingOption
+	@Config.RequiresWorldRestart
 	public static int range = 10;
 
-	@Config.Comment("Whether or not to have sounds")
+	@Config.Comment("Sounds?")
 	public static boolean sound = true;
 
-	@Config.Comment("Whether or not to extend reach (Relog to apply)")
+	@Config.Comment("Extend reach?")
+	@Config.RequiresWorldRestart
 	public static boolean reach = true;
 
-	@Config.Comment("Whether or not to show FPS")
+	@Config.Comment("Show FPS?")
 	public static boolean fps = true;
+
+	@Config.Comment("Show Tickrate?")
+	public static boolean tickrate = true;
+
+	@Config.Comment("Show guide?")
+	public static boolean guide = true;
 
 	@SubscribeEvent
 	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {

@@ -1,5 +1,6 @@
 package com.shaybox.straymav;
 
+import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -16,20 +17,18 @@ class Overlay extends Gui {
 
 		// Top Left
 		if (Configuration.fps) drawString(minecraft.fontRenderer, "FPS: " + Minecraft.getDebugFPS(), 0, 0, 0xFFAA00);
-
-		int width = scaledResolution.getScaledWidth();
-		int height = scaledResolution.getScaledHeight();
+		if (Configuration.tickrate) drawString(minecraft.fontRenderer, "TPS: " + TickrateAPI.getServerTickrate(), 0, 10, 0xFFAA00);
 
 		// Bottom Left
-		if (Configuration.fps) drawString(minecraft.fontRenderer, "This is our secret ;)", 0, height - 10, 0xFFAA);
+		int queueSize = main.getQueue().size();
+		String string = getTime() + " (" + queueSize + ")";
+		if (main.getState().equals("PAUSED")) string = "Paused (" + queueSize + ")";
+		if (main.getState().equals("NOT_RUNNING")) {
+			if (queueSize == 0) string = "Queue empty";
+			else string = "Press " + Keybindings.pause.getDisplayName() + " to start (" + queueSize + ")";
+		}
 
-		// Bottom Right
-		String string = "Press " + Keybindings.pause.getDisplayName() + " To start the timer";
-		if (main.getState().equals("PAUSED")) string = "Paused";
-		if (main.getState().equals("RUNNING")) string = getTime();
-
-		int stringWidth = minecraft.fontRenderer.getStringWidth(string);
-		drawString(minecraft.fontRenderer, string, width - stringWidth, height - 10, 0xFFAA00);
+		drawString(minecraft.fontRenderer, string, 0, scaledResolution.getScaledHeight() - 10, 0xFFAA00);
 	}
 
 	private String getTime() {
@@ -44,5 +43,13 @@ class Overlay extends Gui {
 		long seconds = duration.getSeconds();
 
 		return (hours == 0 ? "" : hours + "h ") + (minutes == 0 ? "" : minutes + "m ") + (seconds == 0 ? "" : seconds + "s");
+	}
+
+	private static long mean(long[] values)
+	{
+		long sum = 0L;
+		for (long v : values)
+			sum += v;
+		return sum / values.length;
 	}
 }
