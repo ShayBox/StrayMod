@@ -3,7 +3,7 @@ package com.shaybox.straymav;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentString;
@@ -12,6 +12,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -20,74 +21,73 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static net.minecraft.entity.player.EntityPlayer.REACH_DISTANCE;
-
-class EventHandler {
-	private Main main = Main.INSTANCE;
+@Mod.EventBusSubscriber
+public class EventHandler {
 
 	// Render overlay
 	@SubscribeEvent
-	public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
+	public static void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
 		if (event.getType() == ElementType.EXPERIENCE) new Overlay();
 	}
 
-	// Keep Main#player up to date
+	// Set Main#player and Extend reach
 	@SubscribeEvent
-	public void onEntityJoinWorld(EntityJoinWorldEvent event) {
+	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
 		World world = event.getWorld();
 		if (world.isRemote) return;
 
 		Entity entity = event.getEntity();
 		if (entity instanceof EntityPlayer) {
+			// Set Main#player
 			EntityPlayer player = (EntityPlayer) entity;
-			main.setPlayer(player);
+			Main.INSTANCE.setPlayer(player);
 
-			// Extend extend
-			player.getEntityAttribute(REACH_DISTANCE).setBaseValue(Configuration.reach.extend ? Configuration.reach.range : 5.0D);
+			// Extended reach
+			if (Configuration.reach.extend)
+				player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).setBaseValue(Configuration.reach.range);
 		}
 	}
 
-	// Login chat guide
+	// Guide
 	@SubscribeEvent
-	public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		if (!Configuration.misc.guide) return;
-		event.player.sendMessage(new TextComponentString("Quick guide:"));
-		event.player.sendMessage(new TextComponentString(Keybindings.add.getDisplayName() + " to one to queue"));
-		event.player.sendMessage(new TextComponentString(Keybindings.remove.getDisplayName() + " to remove one from queue"));
-		event.player.sendMessage(new TextComponentString(Keybindings.pause.getDisplayName() + " to start and pause queue"));
-		event.player.sendMessage(new TextComponentString(Keybindings.skip.getDisplayName() + " to immediately skip a cycle"));
-		event.player.sendMessage(new TextComponentString(Keybindings.tickrateMax.getDisplayName() + " to set tickrate to max"));
-		event.player.sendMessage(new TextComponentString(Keybindings.tickrateNormal.getDisplayName() + " to set tickrate to normal"));
-		event.player.sendMessage(new TextComponentString(Keybindings.give.getDisplayName() + " to get a chance cube"));
-		event.player.sendMessage(new TextComponentString(Keybindings.bat.getDisplayName() + " to spawn a bat"));
-		event.player.sendMessage(new TextComponentString("All of these can be changed in Controls, #SAVEPICKLES"));
+	public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+		if (Configuration.misc.guide) {
+			event.player.sendMessage(new TextComponentString(Keybindings.add.getDisplayName() + " to one to queue"));
+			event.player.sendMessage(new TextComponentString(Keybindings.remove.getDisplayName() + " to remove one from queue"));
+			event.player.sendMessage(new TextComponentString(Keybindings.pause.getDisplayName() + " to start and pause queue"));
+			event.player.sendMessage(new TextComponentString(Keybindings.skip.getDisplayName() + " to immediately skip a cycle"));
+			event.player.sendMessage(new TextComponentString(Keybindings.tickrateMax.getDisplayName() + " to set tickrate to max"));
+			event.player.sendMessage(new TextComponentString(Keybindings.tickrateNormal.getDisplayName() + " to set tickrate to normal"));
+			event.player.sendMessage(new TextComponentString(Keybindings.give.getDisplayName() + " to get a chance cube"));
+			event.player.sendMessage(new TextComponentString(Keybindings.bat.getDisplayName() + " to spawn a bat"));
+		}
 	}
 
+	// Modify animals
 	@SubscribeEvent
-	public void onWorldTick(TickEvent.WorldTickEvent event) {
+	public static void onWorldTick(TickEvent.WorldTickEvent event) {
 		for (Entity entity : event.world.getLoadedEntityList()) {
-			if (entity instanceof EntityCow) {
-				EntityCow cow = (EntityCow) entity;
-				// Accelerated cow breeding
-				if (Configuration.cow.breeding) {
-					int breedingCooldown = 20 * Configuration.cow.breedingCooldown;
-					if (cow.getGrowingAge() > breedingCooldown) cow.setGrowingAge(breedingCooldown);
+			if (entity instanceof EntityAnimal) {
+				EntityAnimal animal = (EntityAnimal) entity;
+				if (Configuration.animal.breeding) {
+					int breedingCooldown = 20 * Configuration.animal.breedingCooldown;
+					if (animal.getGrowingAge() > breedingCooldown) animal.setGrowingAge(breedingCooldown);
 				}
-				// Accelerated cow ageing
-				if (Configuration.cow.ageing) {
-					int ageingCooldown = -(20 * Configuration.cow.ageingCooldown);
-					if (cow.getGrowingAge() < ageingCooldown) cow.setGrowingAge(ageingCooldown);
+				if (Configuration.animal.ageing) {
+					int ageingCooldown = -(20 * Configuration.animal.ageingCooldown);
+					if (animal.getGrowingAge() < ageingCooldown) animal.setGrowingAge(ageingCooldown);
 				}
 			}
 		}
 	}
 
-	// Keybindings Handler
+	// Keybindings
 	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+	public static void onKeyInput(InputEvent.KeyInputEvent event) {
+		Main main = Main.INSTANCE;
+
 		if (Keybindings.pause.isPressed()) {
 			switch (main.getState()) {
-				// Start minutes
 				case "NOT_RUNNING": {
 					if (main.getQueue().size() == 0) {
 						main.getPlayer().sendMessage(new TextComponentString("Queue is empty"));
@@ -97,14 +97,12 @@ class EventHandler {
 					main.setState("RUNNING");
 					break;
 				}
-				// Pause minutes
 				case "RUNNING": {
 					main.restartTimer();
 					main.setPauseDateTime(LocalDateTime.now());
 					main.setState("PAUSED");
 					break;
 				}
-				// Resume minutes
 				case "PAUSED": {
 					Duration pauseDuration = Duration.between(main.getPauseDateTime(), LocalDateTime.now());
 					LocalDateTime localDateTime = main.getTimerDateTime().plusSeconds(pauseDuration.getSeconds());
@@ -163,14 +161,14 @@ class EventHandler {
 		}
 	}
 
-	// SAVE PICKLES!
+	// #SAVEPICKLES
 	@SubscribeEvent
-	public void onLivingDeath(LivingDeathEvent event) {
+	public static void onLivingDeath(LivingDeathEvent event) {
 		Entity entity = event.getEntity();
 		if (entity instanceof EntityMooshroom && entity.getName().equals("Pickles")) {
 			event.setCanceled(true);
 			EntityMooshroom entityMooshroom = (EntityMooshroom) entity;
-			EntityPlayer player = main.getPlayer();
+			EntityPlayer player = Main.INSTANCE.getPlayer();
 			entityMooshroom.setHealth(20);
 			entityMooshroom.attemptTeleport(player.posX, player.posY, player.posZ);
 			player.sendMessage(new TextComponentString("#SAVEPICKLES"));
