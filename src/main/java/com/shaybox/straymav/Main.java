@@ -1,10 +1,8 @@
 package com.shaybox.straymav;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.lwjgl.opengl.Display;
 
@@ -13,35 +11,36 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Timer;
 
-@Mod(modid = Main.MOD_ID, name = Main.MOD_NAME, version = Main.VERSION, dependencies = "required-after:chancecubes;required-after:tickratechanger")
+@Mod(modid = Main.MOD_ID, name = Main.MOD_NAME, version = Main.VERSION, dependencies = "required-after:chancecubes;required-after:tickratechanger;")
 public class Main {
+
+	// Mod References
+
 	static final String MOD_ID = "straymav";
 	static final String MOD_NAME = "StrayMav";
-	static final String VERSION = "1.2.0";
+	static final String VERSION = "1.3.0";
 
 	@Mod.Instance(MOD_ID)
 	static Main INSTANCE;
 
+	// Custom variables
+
 	private Timer timer = new Timer();
 	private LocalDateTime timerDateTime = LocalDateTime.now();
-	private LocalDateTime pauseDateTime;
+	private LocalDateTime pauseDateTime = LocalDateTime.now();
 	private String state = "NOT_RUNNING";
-	private EntityPlayer player;
+	private EntityPlayer player = Minecraft.getMinecraft().player;
 	private Queue<Integer> queue = new LinkedList<>();
+
+	// Forge events
 
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent event) {
 		Display.setTitle("#SAVEPICKLES");
-	}
-
-	@Mod.EventHandler
-	public void init(FMLInitializationEvent event) {}
-
-	@Mod.EventHandler
-	public void postinit(FMLPostInitializationEvent event) {
 		Keybindings.register();
-		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
+
+	// Getters & Setters
 
 	Timer getTimer() {
 		return timer;

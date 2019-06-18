@@ -11,19 +11,31 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber
 class Configuration {
 
-	@Config.Name("Cow Options")
-	public static CowOptions cow = new CowOptions();
+	@Config.Name("Animal Options")
+	public static AnimalOptions animal = new AnimalOptions();
+	@Config.Name("Misc Options")
+	public static MiscOptions misc = new MiscOptions();
+	@Config.Name("Overlay Options")
+	public static OverlayOptions overlay = new OverlayOptions();
+	@Config.Name("Reach Options")
+	public static ReachOptions reach = new ReachOptions();
+	@Config.Name("Timer Options")
+	public static TimerOptions timer = new TimerOptions();
 
-	public static class CowOptions {
+	@SubscribeEvent
+	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+		if (event.getModID().equals(Main.MOD_ID)) ConfigManager.sync(Main.MOD_ID, Config.Type.INSTANCE);
+	}
+
+	public static class AnimalOptions {
 		@Config.Name("Modify Breeding")
 		@Config.Comment("Modify breeding?")
 		public boolean breeding = true;
 
 		@Config.Name("Breeding Cooldown")
 		@Config.Comment("Breeding cooldown (Seconds)")
-		@Config.RangeInt(min = 1, max = 60)
-		@Config.SlidingOption
-		public int breedingCooldown = 30;
+		@Config.RangeInt(min = 0, max = 900)
+		public int breedingCooldown = 900;
 
 		@Config.Name("Ageing")
 		@Config.Comment("Modify ageing?")
@@ -31,11 +43,9 @@ class Configuration {
 
 		@Config.Name("Ageing Cooldown")
 		@Config.Comment("Ageing cooldown (Seconds)")
-		public int ageingCooldown = 30;
+		@Config.RangeInt(min = 0, max = 900)
+		public int ageingCooldown = 900;
 	}
-
-	@Config.Name("Misc Options")
-	public static MiscOptions misc = new MiscOptions();
 
 	public static class MiscOptions {
 		@Config.Name("Guide")
@@ -46,9 +56,6 @@ class Configuration {
 		@Config.Comment("Play sounds?")
 		public boolean sound = true;
 	}
-
-	@Config.Name("Overlay Options")
-	public static OverlayOptions overlay = new OverlayOptions();
 
 	public static class OverlayOptions {
 		@Config.Name("Framerate")
@@ -64,9 +71,6 @@ class Configuration {
 		public boolean randomTickSpeed = true;
 	}
 
-	@Config.Name("Reach Options")
-	public static ReachOptions reach = new ReachOptions();
-
 	public static class ReachOptions {
 		@Config.Name("Extend")
 		@Config.Comment("Extend extend?")
@@ -80,10 +84,6 @@ class Configuration {
 		@Config.RequiresWorldRestart
 		public int range = 10;
 	}
-
-
-	@Config.Name("Timer Options")
-	public static TimerOptions timer = new TimerOptions();
 
 	public static class TimerOptions {
 		@Config.Name("Minutes")
@@ -102,10 +102,5 @@ class Configuration {
 		@Config.Comment("How long will the bat live (Seconds)")
 		@Config.RangeInt(min = 1, max = 60)
 		public int batLifetime = 5;
-	}
-
-	@SubscribeEvent
-	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-		if (event.getModID().equals(Main.MOD_ID)) ConfigManager.sync(Main.MOD_ID, Config.Type.INSTANCE);
 	}
 }

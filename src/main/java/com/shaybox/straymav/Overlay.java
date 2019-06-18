@@ -16,17 +16,20 @@ class Overlay extends Gui {
 		ScaledResolution scaledResolution = new ScaledResolution(minecraft);
 
 		// Top Left
-		if (Configuration.overlay.framerate) drawString(minecraft.fontRenderer, "FPS: " + Minecraft.getDebugFPS(), 0, 0, 0xFFAA00);
-		if (Configuration.overlay.tickrate) drawString(minecraft.fontRenderer, "TPS: " + TickrateAPI.getServerTickrate(), 0, 10, 0xFFAA00);
+		if (Configuration.overlay.framerate)
+			drawString(minecraft.fontRenderer, "FPS: " + Minecraft.getDebugFPS(), 0, 0, 0xFFAA00);
+		if (Configuration.overlay.tickrate)
+			drawString(minecraft.fontRenderer, "TPS: " + TickrateAPI.getServerTickrate(), 0, 10, 0xFFAA00);
 		int randomTickSpeed = main.getPlayer().getEntityWorld().getGameRules().getInt("randomTickSpeed");
-		if (Configuration.overlay.randomTickSpeed) drawString(minecraft.fontRenderer, "RTS: " + randomTickSpeed, 0, 20, 0xFFAA00);
+		if (Configuration.overlay.randomTickSpeed)
+			drawString(minecraft.fontRenderer, "RTS: " + randomTickSpeed, 0, 20, 0xFFAA00);
 
 		// Bottom Left
 		int queueSize = main.getQueue().size();
 		String string = getTime() + " (" + queueSize + ")";
 		if (main.getState().equals("PAUSED")) string = "Paused (" + queueSize + ")";
 		if (main.getState().equals("NOT_RUNNING")) {
-			if (queueSize == 0) string = "Queue empty";
+			if (queueSize == 0) string = "Press " + Keybindings.add.getDisplayName() + " to add to queue";
 			else string = "Press " + Keybindings.pause.getDisplayName() + " to start (" + queueSize + ")";
 		}
 
@@ -45,13 +48,5 @@ class Overlay extends Gui {
 		long seconds = duration.getSeconds();
 
 		return (hours == 0 ? "" : hours + "h ") + (minutes == 0 ? "" : minutes + "m ") + (seconds == 0 ? "" : seconds + "s");
-	}
-
-	private static long mean(long[] values)
-	{
-		long sum = 0L;
-		for (long v : values)
-			sum += v;
-		return sum / values.length;
 	}
 }
