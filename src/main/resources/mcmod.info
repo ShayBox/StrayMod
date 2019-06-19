@@ -1,21 +1,18 @@
 [
   {
-    "modid": "straymav",
-    "name": "StrayMav",
-    "description": "injection point type '%s'",
+    "modid": "straymod",
+    "name": "StrayMod",
+    "description": "Custom mod for StrayMav",
     "version": "${version}",
     "mcversion": "${mcversion}",
-    "url": "https://straymav.com/",
+    "url": "https://straymav.com",
     "updateUrl": "",
     "authorList": [
       "ShayBox"
     ],
-    "credits": "Credit to StrayMav for being a great streamer <3",
+    "credits": "Credits to Stray for being a great person <3",
     "logoFile": "",
     "screenshots": [],
-    "dependencies": [
-      "chancecubes",
-      "tickratechanger"
-    ]
+    "dependencies": []
   }
 ]

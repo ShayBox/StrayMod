@@ -1,4 +1,4 @@
-package com.shaybox.straymav;
+package com.shaybox.straymod;
 
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -9,17 +9,23 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @SuppressWarnings("WeakerAccess")
 @Config(modid = Main.MOD_ID)
 @Mod.EventBusSubscriber
-class Configuration {
+public class Configuration {
 
 	@Config.Name("Animal Options")
 	public static AnimalOptions animal = new AnimalOptions();
+
 	@Config.Name("Misc Options")
 	public static MiscOptions misc = new MiscOptions();
+
 	@Config.Name("Overlay Options")
 	public static OverlayOptions overlay = new OverlayOptions();
+
 	@Config.Name("Reach Options")
+	@Config.Comment("Animal related modifications")
 	public static ReachOptions reach = new ReachOptions();
+
 	@Config.Name("Timer Options")
+	@Config.Comment("Animal related modifications")
 	public static TimerOptions timer = new TimerOptions();
 
 	@SubscribeEvent
