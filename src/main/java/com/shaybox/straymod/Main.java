@@ -7,10 +7,11 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = Main.MOD_ID, name = Main.MOD_NAME, dependencies = "required-after:chancecubes;required-after:tickratechanger")
+@Mod(modid = Main.MOD_ID, name = Main.MOD_NAME, dependencies = Main.MOD_DEPENDENCIES)
 public class Main {
 	static final String MOD_ID = "straymod";
 	static final String MOD_NAME = "StrayMod";
+	static final String MOD_DEPENDENCIES = "required-after:chancecubes;required-after:tickratechanger";
 
 	@Mod.Instance(MOD_ID)
 	static Main INSTANCE;
