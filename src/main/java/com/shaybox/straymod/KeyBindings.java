@@ -13,18 +13,31 @@ import org.lwjgl.input.Keyboard;
 @Mod.EventBusSubscriber
 public class KeyBindings {
 
-	public static KeyBinding action = new KeyBinding("Start, pause, and resume timer", Keyboard.KEY_HOME, Main.MOD_NAME + " Queue");
-	public static KeyBinding skip = new KeyBinding("Skip cycle", Keyboard.KEY_END, Main.MOD_NAME + " Queue");
-	public static KeyBinding add = new KeyBinding("Add to queue", Keyboard.KEY_INSERT, Main.MOD_NAME + " Queue");
-	public static KeyBinding remove = new KeyBinding("Remove from queue", Keyboard.KEY_DELETE, Main.MOD_NAME + " Queue");
+	static KeyBinding action = new KeyBinding("Start, pause, and resume timer", Keyboard.KEY_HOME, Main.MOD_NAME + " Queue");
+	static KeyBinding skip = new KeyBinding("Skip cycle", Keyboard.KEY_END, Main.MOD_NAME + " Queue");
+	static KeyBinding add = new KeyBinding("Add to queue", Keyboard.KEY_INSERT, Main.MOD_NAME + " Queue");
+	static KeyBinding remove = new KeyBinding("Remove from queue", Keyboard.KEY_DELETE, Main.MOD_NAME + " Queue");
 
-	public static KeyBinding give = new KeyBinding("Give chance cube", Keyboard.KEY_PRIOR, Main.MOD_NAME + " Manual");
-	public static KeyBinding bat = new KeyBinding("Spawn bat", Keyboard.KEY_NEXT, Main.MOD_NAME + " Manual");
+	static KeyBinding give = new KeyBinding("Give chance cube", Keyboard.KEY_PRIOR, Main.MOD_NAME + " Manual");
+	static KeyBinding bat = new KeyBinding("Spawn bat", Keyboard.KEY_NEXT, Main.MOD_NAME + " Manual");
 
-	public static KeyBinding tpsIncrease = new KeyBinding("Increases tickrate", Keyboard.KEY_UP, Main.MOD_NAME + " Tickrate");
-	public static KeyBinding tpsDefault = new KeyBinding("Set tickrate to default", Keyboard.KEY_DOWN, Main.MOD_NAME + " Tickrate");
-	public static KeyBinding rtsIncrease = new KeyBinding("Increases random tick speed", Keyboard.KEY_RIGHT, Main.MOD_NAME + " Tickrate");
-	public static KeyBinding rtsDefault = new KeyBinding("Sets random tick speed to default", Keyboard.KEY_LEFT, Main.MOD_NAME + " Tickrate");
+	static KeyBinding tpsIncrease = new KeyBinding("Increases tickrate", Keyboard.KEY_UP, Main.MOD_NAME + " Tickrate");
+	static KeyBinding tpsDefault = new KeyBinding("Set tickrate to default", Keyboard.KEY_DOWN, Main.MOD_NAME + " Tickrate");
+	static KeyBinding rtsIncrease = new KeyBinding("Increases random tick speed", Keyboard.KEY_RIGHT, Main.MOD_NAME + " Tickrate");
+	static KeyBinding rtsDefault = new KeyBinding("Sets random tick speed to default", Keyboard.KEY_LEFT, Main.MOD_NAME + " Tickrate");
+
+	public static KeyBinding[] keys = new KeyBinding[] {
+		KeyBindings.action,
+		KeyBindings.skip,
+		KeyBindings.add,
+		KeyBindings.remove,
+		KeyBindings.give,
+		KeyBindings.bat,
+		KeyBindings.tpsIncrease,
+		KeyBindings.tpsDefault,
+		KeyBindings.rtsIncrease,
+		KeyBindings.rtsDefault
+	};
 
 	@SubscribeEvent
 	public static void onKeyInput(InputEvent.KeyInputEvent event) {
@@ -101,15 +114,6 @@ public class KeyBindings {
 	}
 
 	public static void register() {
-		ClientRegistry.registerKeyBinding(action);
-		ClientRegistry.registerKeyBinding(skip);
-		ClientRegistry.registerKeyBinding(add);
-		ClientRegistry.registerKeyBinding(remove);
-		ClientRegistry.registerKeyBinding(give);
-		ClientRegistry.registerKeyBinding(bat);
-		ClientRegistry.registerKeyBinding(tpsIncrease);
-		ClientRegistry.registerKeyBinding(tpsDefault);
-		ClientRegistry.registerKeyBinding(rtsIncrease);
-		ClientRegistry.registerKeyBinding(rtsDefault);
+		for (KeyBinding key : keys) ClientRegistry.registerKeyBinding(key);
 	}
 }

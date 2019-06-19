@@ -5,6 +5,7 @@ import com.shaybox.straymod.KeyBindings;
 import com.shaybox.straymod.Main;
 import com.shaybox.straymod.Overlay;
 import com.shaybox.straymod.proxy.ClientProxy;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityMooshroom;
@@ -70,18 +71,9 @@ public class ClientEventHandler {
 	// Guide
 	@SubscribeEvent
 	public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		if (Configuration.misc.guide) {
-			event.player.sendMessage(new TextComponentString(KeyBindings.action.getDisplayName() + " Start/Pause/Resume"));
-			event.player.sendMessage(new TextComponentString(KeyBindings.skip.getDisplayName() + " Skip"));
-			event.player.sendMessage(new TextComponentString(KeyBindings.add.getDisplayName() + " Add"));
-			event.player.sendMessage(new TextComponentString(KeyBindings.remove.getDisplayName() + " Remove"));
-			event.player.sendMessage(new TextComponentString(KeyBindings.give.getDisplayName() + " Block"));
-			event.player.sendMessage(new TextComponentString(KeyBindings.bat.getDisplayName() + " Bat"));
-			event.player.sendMessage(new TextComponentString(KeyBindings.tpsIncrease.getDisplayName() + " Max TPS"));
-			event.player.sendMessage(new TextComponentString(KeyBindings.tpsDefault.getDisplayName() + " Default TPS"));
-			event.player.sendMessage(new TextComponentString(KeyBindings.rtsIncrease.getDisplayName() + " Max RTS"));
-			event.player.sendMessage(new TextComponentString(KeyBindings.rtsDefault.getDisplayName() + " Default RTS"));
-		}
+		if (!Configuration.misc.guide) return;
+		for (KeyBinding key : KeyBindings.keys)
+			event.player.sendMessage(new TextComponentString(key.getDisplayName() + " " + key.getKeyDescription()));
 	}
 
 	// #SAVEPICKLES
