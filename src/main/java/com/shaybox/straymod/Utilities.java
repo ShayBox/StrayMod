@@ -1,13 +1,13 @@
-package com.shaybox.straymav;
+package com.shaybox.straymod;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -36,7 +36,7 @@ class Utilities {
 		if (!succeeded) player.sendMessage(new TextComponentString("I couldn't give you a block"));
 	}
 
-	static void spawnBat(EntityPlayer player, Minecraft minecraft) {
+	static void spawnBat(EntityPlayer player) {
 		World world = player.getEntityWorld();
 
 		EntityBat entityBat = new EntityBat(world);
@@ -60,7 +60,8 @@ class Utilities {
 				}
 			}
 
-			if (Configuration.misc.sound) minecraft.player.playSound(chanceCubeSound, 1, 1);
+			if (Configuration.misc.sound)
+				world.playSound(null, entityBat.getPosition(), chanceCubeSound, SoundCategory.MASTER, 1, 1);
 		}, 1000 * Configuration.timer.batLifetime);
 	}
 }
