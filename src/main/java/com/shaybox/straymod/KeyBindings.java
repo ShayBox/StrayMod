@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
+@SuppressWarnings("WeakerAccess")
 @Mod.EventBusSubscriber
 public class KeyBindings {
 
@@ -26,7 +27,7 @@ public class KeyBindings {
 	static KeyBinding rtsIncrease = new KeyBinding("Increases random tick speed", Keyboard.KEY_RIGHT, Main.MOD_NAME + " Tickrate");
 	static KeyBinding rtsDefault = new KeyBinding("Sets random tick speed to default", Keyboard.KEY_LEFT, Main.MOD_NAME + " Tickrate");
 
-	public static KeyBinding[] keys = new KeyBinding[] {
+	public static KeyBinding[] keys = new KeyBinding[]{
 		KeyBindings.action,
 		KeyBindings.skip,
 		KeyBindings.add,

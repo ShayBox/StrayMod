@@ -1,7 +1,7 @@
 package com.shaybox.straymod.proxy;
 
 import com.shaybox.straymod.KeyBindings;
-import com.shaybox.straymod.util.TimerHelper;
+import com.shaybox.straymod.timer.TimerHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;

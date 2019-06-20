@@ -13,9 +13,6 @@ public class Main {
 	static final String MOD_NAME = "StrayMod";
 	static final String MOD_DEPENDENCIES = "required-after:chancecubes;required-after:tickratechanger";
 
-	@Mod.Instance(MOD_ID)
-	static Main INSTANCE;
-
 	@SidedProxy(
 		clientSide = "com.shaybox.straymod.proxy.ClientProxy",
 		serverSide = "com.shaybox.straymod.proxy.ServerProxy"

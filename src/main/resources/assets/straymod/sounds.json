@@ -1,0 +1,16 @@
+{
+  "boop": {
+    "category": "block",
+    "subtitle": "straymod.boop",
+    "sounds": [ "straymod:boop" ]
+  },
+  "tuck_and_roll": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "straymod:music/tuck_and_roll",
+        "stream": true
+      }
+    ]
+  }
+}

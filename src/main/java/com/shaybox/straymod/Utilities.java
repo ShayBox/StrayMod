@@ -8,7 +8,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -16,7 +15,6 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 class Utilities {
 	private static Block chanceCubeBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("chancecubes:chance_cube"));
-	private static SoundEvent chanceCubeSound = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("chancecubes:giant_cube_spawn"));
 
 	private static void setTimeout(Runnable runnable, int delay) {
 		new Thread(() -> {
@@ -24,7 +22,7 @@ class Utilities {
 				Thread.sleep(delay);
 				runnable.run();
 			} catch (Exception e) {
-				System.err.println(e);
+				e.printStackTrace();
 			}
 		}).start();
 	}
@@ -61,7 +59,7 @@ class Utilities {
 			}
 
 			if (Configuration.misc.sound)
-				world.playSound(null, entityBat.getPosition(), chanceCubeSound, SoundCategory.MASTER, 1, 1);
+				world.playSound(null, entityBat.getPosition(), Sounds.getSoundEvent("boop"), SoundCategory.MASTER, 1, 1);
 		}, 1000 * Configuration.timer.batLifetime);
 	}
 }
