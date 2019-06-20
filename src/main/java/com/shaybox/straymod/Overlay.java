@@ -1,7 +1,7 @@
 package com.shaybox.straymod;
 
 import com.shaybox.straymod.proxy.ClientProxy;
-import com.shaybox.straymod.util.State;
+import com.shaybox.straymod.timer.State;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
