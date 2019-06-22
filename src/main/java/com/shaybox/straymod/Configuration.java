@@ -21,12 +21,16 @@ public class Configuration {
 	public static OverlayOptions overlay = new OverlayOptions();
 
 	@Config.Name("Reach Options")
-	@Config.Comment("Animal related modifications")
 	public static ReachOptions reach = new ReachOptions();
 
 	@Config.Name("Timer Options")
-	@Config.Comment("Animal related modifications")
 	public static TimerOptions timer = new TimerOptions();
+
+	@Config.Name("Twitch Options")
+	public static TwitchOptions twitch = new TwitchOptions();
+
+	@Config.Name("Secret Options (DO NOT OPEN ON STREAM)")
+	public static SecretOptions secret = new SecretOptions();
 
 	@SubscribeEvent
 	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
@@ -108,5 +112,25 @@ public class Configuration {
 		@Config.Comment("How long will the bat live (Seconds)")
 		@Config.RangeInt(min = 1, max = 60)
 		public int batLifetime = 5;
+	}
+
+	public static class TwitchOptions {
+		@Config.Name("Dollars")
+		@Config.Comment("How many dollars for a cube")
+		@Config.RangeInt(min = 1, max = 50)
+		@Config.SlidingOption
+		public int dollars = 5;
+	}
+
+	public static class SecretOptions {
+		@Config.Name("Confirm Options (DO NOT OPEN ON STREAM)")
+		public ConfirmOptions confirm = new ConfirmOptions();
+	}
+
+	public static class ConfirmOptions {
+		@Config.Name("Twitch Token")
+		@Config.Comment("Twitch Token")
+		@Config.RequiresMcRestart
+		public String token = "";
 	}
 }

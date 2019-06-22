@@ -28,8 +28,6 @@ class Utilities {
 	}
 
 	static void giveChanceCube(EntityPlayer player) {
-		if (player == null) return;
-
 		boolean succeeded = player.inventory.addItemStackToInventory(new ItemStack(chanceCubeBlock, 1));
 		if (!succeeded) player.sendMessage(new TextComponentString("I couldn't give you a block"));
 	}

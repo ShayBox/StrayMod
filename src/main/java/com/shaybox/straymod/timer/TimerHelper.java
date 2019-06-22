@@ -50,7 +50,7 @@ public class TimerHelper {
 	}
 
 	public void updateTime() {
-		this.timerDateTime = LocalDateTime.now();
+		this.timerDateTime = LocalDateTime.now().plusMinutes(Configuration.timer.minutes);
 	}
 
 	public LocalDateTime getTimerDateTime() {
