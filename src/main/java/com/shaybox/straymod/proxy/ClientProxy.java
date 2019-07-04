@@ -21,7 +21,6 @@ public class ClientProxy implements IProxy {
 
 	private EntityPlayerMP player;
 	private Queue<Integer> queue = new LinkedList<>();
-	private TwitchClient twitch;
 
 	@Override
 	public void preinit(FMLPreInitializationEvent event) {
@@ -36,13 +35,13 @@ public class ClientProxy implements IProxy {
 	@Override
 	public void postinit(FMLPostInitializationEvent event) {
 		OAuth2Credential oAuth2Credential = new OAuth2Credential("twitch", Configuration.secret.confirm.token);
-		twitch = TwitchClientBuilder.builder()
+		TwitchClient twitch = TwitchClientBuilder.builder()
 			.withEnableHelix(true)
 			.withEnableChat(true)
 			.withChatAccount(oAuth2Credential)
 			.build();
 
-		twitch.getChat().joinChannel("straymav");
+		twitch.getChat().joinChannel(Configuration.secret.confirm.name);
 		twitch.getChat().connect();
 		twitch.getChat().getEventManager().registerListener(new TwitchEventHandler());
 	}

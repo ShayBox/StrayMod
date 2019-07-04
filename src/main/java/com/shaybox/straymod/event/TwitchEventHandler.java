@@ -34,7 +34,7 @@ public class TwitchEventHandler {
 		if (player != null)
 			player.sendMessage(new TextComponentString(user.getName() + " has donated " + cents + " bits!"));
 
-		int centsAmount = Configuration.twitch.dollars / 100;
+		int centsAmount = Configuration.twitch.dollars * 100;
 		while (total >= centsAmount) {
 			total -= centsAmount;
 
@@ -65,7 +65,7 @@ public class TwitchEventHandler {
 		if (player != null)
 			player.sendMessage(new TextComponentString(user.getName() + " has donated " + event.getAmount()));
 
-		int centsAmount = Configuration.twitch.dollars / 100;
+		int centsAmount = Configuration.twitch.dollars * 100;
 		while (total >= centsAmount) {
 			total -= centsAmount;
 

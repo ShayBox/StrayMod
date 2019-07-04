@@ -132,5 +132,10 @@ public class Configuration {
 		@Config.Comment("Twitch Token")
 		@Config.RequiresMcRestart
 		public String token = "";
+
+		@Config.Name("Twitch Name")
+		@Config.Comment("Twitch Name")
+		@Config.RequiresMcRestart
+		public String name = "";
 	}
 }
