@@ -1,6 +1,7 @@
 package com.shaybox.straymod;
 
 import com.shaybox.straymod.proxy.ClientProxy;
+import com.shaybox.straymod.timer.State;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.text.TextComponentString;
@@ -68,6 +69,11 @@ public class KeyBindings {
 		if (KeyBindings.skip.isPressed()) {
 			if (proxy.getQueue().size() == 0) {
 				proxy.getPlayer().sendMessage(new TextComponentString("Queue is empty"));
+				return;
+			}
+
+			if (proxy.timer.getState().equals(State.NOT_RUNNING)) {
+				proxy.getPlayer().sendMessage(new TextComponentString("Timer not running"));
 				return;
 			}
 

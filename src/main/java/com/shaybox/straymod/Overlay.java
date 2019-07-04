@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 
+import java.awt.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -17,15 +18,18 @@ public class Overlay extends Gui {
 		ScaledResolution scaledResolution = new ScaledResolution(minecraft);
 
 		// Top-Left Corner
-		if (Configuration.overlay.tickrate)
-			drawString(minecraft.fontRenderer, "TPS: " + TickrateAPI.getServerTickrate(), 0, 0, 0xFFAA00);
+		int fps = Minecraft.getDebugFPS();
+		int color = Color.HSBtoRGB(((120.0f / 360.0f) / 144.0f) * Math.min(fps, 144), 1.0f, 1.0f);
 
 		if (Configuration.overlay.framerate)
-			drawString(minecraft.fontRenderer, "FPS: " + Minecraft.getDebugFPS(), 0, 10, 0xFFAA00);
+			drawString(minecraft.fontRenderer, "FPS: " + fps, 0, 10, color);
+
+		if (Configuration.overlay.tickrate)
+			drawString(minecraft.fontRenderer, "TPS: " + TickrateAPI.getServerTickrate(), 0, 0, color);
 
 		if (Configuration.overlay.randomTickSpeed) {
 			int randomTickSpeed = proxy.getPlayer().getEntityWorld().getGameRules().getInt("randomTickSpeed");
-			drawString(minecraft.fontRenderer, "RTS: " + randomTickSpeed, 0, 20, 0xFFAA00);
+			drawString(minecraft.fontRenderer, "RTS: " + randomTickSpeed, 0, 20, color);
 		}
 
 		// Bottom-Left Corner

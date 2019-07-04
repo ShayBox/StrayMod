@@ -15,7 +15,7 @@ public class TimerHelper {
 
 	public void start() {
 		this.timer = new Timer();
-		this.timer.scheduleAtFixedRate(new CustomTask(), 1000 * 60 * Configuration.timer.minutes, 1000 * 60 * Configuration.timer.minutes);
+		this.timer.scheduleAtFixedRate(new CustomTask(), 0, 1000 * 60 * Configuration.timer.minutes);
 		this.timerDateTime = LocalDateTime.now().plusMinutes(Configuration.timer.minutes);
 		this.state = State.RUNNING;
 	}
@@ -26,9 +26,8 @@ public class TimerHelper {
 	}
 
 	public void pause() {
-		this.timer.cancel();
 		this.pauseDateTime = LocalDateTime.now();
-		this.state = State.PAUSED;
+		this.stop();
 	}
 
 	public void resume() {
@@ -43,10 +42,8 @@ public class TimerHelper {
 	}
 
 	public void skip() {
-		this.timer.cancel();
-		this.timer = new Timer();
-		this.timer.scheduleAtFixedRate(new CustomTask(), 0, 1000 * 60 * Configuration.timer.minutes);
-		this.state = State.RUNNING;
+		this.stop();
+		this.start();
 	}
 
 	public void updateTime() {

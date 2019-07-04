@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "AAA",
+    "AAA"  ],
+  "key": {
+    "A": [
+      {
+        "item": "minecraft:dirt",
+        "data": 0
+      }
+    ]
+  },
+  "result": {
+    "item": "straymod:tuck_and_roll",
+    "data": 0
+  }
+}
