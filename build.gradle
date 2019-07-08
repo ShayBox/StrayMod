@@ -26,14 +26,10 @@ minecraft {
 repositories {
     mavenCentral()
     jcenter()
-    maven { url "https://oss.jfrog.org/artifactory/libs-release" }
 }
 
 dependencies {
     compile files("lib/TickrateChanger-1.0.14-deobf.jar")
-    compile("com.github.twitch4j:twitch4j:1.0.0-alpha.14") {
-        exclude module: "guava"
-    }
 }
 
 processResources {
